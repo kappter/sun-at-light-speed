@@ -42,7 +42,7 @@
 
     <section class="views" aria-label="Two views of the model">
       <article class="view">
-        <div class="view-head"><div><h2>Orbit view</h2><p>Looking down on the equatorial plane</p></div><div class="live"><span class="dot"></span><span id="phase-label">At sunrise · 0°</span></div></div>
+        <div class="view-head"><div><h2>Orbit view · now</h2><p>Current position, plus the earlier light-emission position</p></div><div class="live"><span class="dot"></span><span id="phase-label">At sunrise · 0°</span></div></div>
         <svg class="orbit-svg" viewBox="0 0 520 340" role="img" aria-labelledby="orbit-title orbit-desc">
           <title id="orbit-title">The Sun orbiting Earth at the selected speed</title><desc id="orbit-desc">A top-down diagram showing Earth at the center and the Sun moving around a circular orbit with a radius of one astronomical unit.</desc>
           <defs><radialGradient id="earth-fill"><stop stop-color="#6176d7"/><stop offset="1" stop-color="#202b5b"/></radialGradient><radialGradient id="sun-fill"><stop stop-color="#fff4bf"/><stop offset=".55" stop-color="#ffd375"/><stop offset="1" stop-color="#ff9b55"/></radialGradient></defs>
@@ -50,12 +50,14 @@
           <circle cx="260" cy="174" r="3" fill="#74809b"/><line id="radius-line" x1="260" y1="174" x2="386" y2="174" stroke="#7380a2" stroke-width="1" stroke-dasharray="4 5"/>
           <text x="270" y="163" class="svg-small">1 AU</text>
           <circle cx="260" cy="174" r="17" fill="url(#earth-fill)" stroke="#97aaff" stroke-width="1.2"/><path d="M252 166c4 2 4 4 7 5 3 1 1 4 4 6l-4 6-6-3-2-6-4-3z" fill="#8dd9c2" opacity=".9"/><text x="260" y="212" text-anchor="middle" class="svg-label">EARTH</text>
+          <circle id="emitted-sun" cx="386" cy="174" r="8" fill="none" stroke="#7de1d0" stroke-width="2"/>
           <circle id="sun-halo" cx="386" cy="174" r="18" fill="#ffc96b" opacity=".13"/><circle id="sun-dot" class="star-glow" cx="386" cy="174" r="8" fill="url(#sun-fill)"/>
+          <text x="260" y="296" text-anchor="middle" class="svg-small">Gold: Sun now · cyan ring: light reaching Earth now</text>
           <text id="playback-note" x="260" y="315" text-anchor="middle" class="svg-small">Playback: 100× time-lapse. Calculated times use the entered speed.</text>
         </svg>
       </article>
       <article class="view">
-        <div class="view-head"><div><h2>Equatorial sky</h2><p>What the observer sees above the horizon</p></div><div class="live"><span id="sky-state">Sun above horizon</span></div></div>
+        <div class="view-head"><div><h2>Equatorial sky · arriving light</h2><p>The Sun as seen after the 8 min 19 sec light-travel delay</p></div><div class="live"><span id="sky-state">Sun above horizon</span></div></div>
         <svg class="sky-svg" viewBox="0 0 520 340" role="img" aria-labelledby="sky-title sky-desc">
           <title id="sky-title">The Sun's apparent path across the equatorial sky</title><desc id="sky-desc">A half-circle arc from the east horizon to the west horizon. The Sun is visible on this arc during half of its orbit.</desc>
           <defs><linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#24345a" stop-opacity=".74"/><stop offset="1" stop-color="#141a2b" stop-opacity=".14"/></linearGradient></defs>
@@ -72,7 +74,7 @@
       </article>
     </section>
 
-    <aside class="foot"><p><strong>What this means:</strong> at 1 AU, the circle is about 940 million km around. At light speed, the Sun would sweep from horizon to horizon in about 26 minutes. Its light would still take about 8 minutes 19 seconds to reach us.</p><p>This model assigns a speed to the Sun and ignores gravity, relativity, and Earth’s rotation. A real Sun cannot travel at light speed. Use Real time (1×) to watch one simulated second per real second, or leave it unchecked for 100× time-lapse. The calculated times always use the entered speed.</p></aside>
+    <aside class="foot"><p><strong>What this means:</strong> at 1 AU, the circle is about 940 million km around. At light speed, the Sun would sweep from horizon to horizon in about 26 minutes. The sky view shows light emitted about 8 minutes 19 seconds earlier. At constant speed, this delay shifts the apparent position without changing the crossing time. At c, the visible Sun is about 57.3° behind its current position.</p><p>This model assigns a speed to the Sun and ignores gravity, relativity, and Earth’s rotation. A real Sun cannot travel at light speed. Use Real time (1×) to watch one simulated second per real second, or leave it unchecked for 100× time-lapse. The calculated times always use the entered speed. The sky view follows the delayed motion history, so a speed change takes 8 minutes 19 seconds of simulation time to become visible there. Reset starts a steady orbit at the selected speed. Sun symbols are enlarged for visibility.</p></aside>
   </main>
   <script>
     (()=>{
@@ -80,22 +82,27 @@
       const range=document.getElementById('speed-range'), input=document.getElementById('speed-value');
       const ui={speedC:document.getElementById('speed-c'),period:document.getElementById('period'),daylight:document.getElementById('daylight'),angular:document.getElementById('angular'),disk:document.getElementById('disk-crossing'),delay:document.getElementById('light-delay'),sun:document.getElementById('sun-dot'),halo:document.getElementById('sun-halo'),line:document.getElementById('radius-line'),skySun:document.getElementById('sky-sun'),skyHalo:document.getElementById('sky-sun-halo'),skyState:document.getElementById('sky-state'),skyMessage:document.getElementById('sky-message'),skyCaption:document.getElementById('sky-caption'),phase:document.getElementById('phase-label'),play:document.getElementById('play')};
       const realTime=document.getElementById('real-time');
-      let speed=C, phase=0, running=true, playback=100, last=performance.now();
+      let speed=C, phase=0, running=true, playback=100, last=performance.now(), simulatedTime=0;
+      const lightDelay=AU/C;
+      let history=[{time:-lightDelay,phase:-speed/AU*lightDelay,omega:speed/AU}];
+      function observedPhase(){const t=simulatedTime-lightDelay;let segment=history[0];for(const item of history){if(item.time>t)break;segment=item;}return segment.phase+segment.omega*(t-segment.time);}
       const fmtTime=(s)=>{if(!Number.isFinite(s))return '∞'; if(s<60)return `${s.toFixed(s<10?1:0)} sec`; let rem=Math.round(s),h=Math.floor(rem/3600),m=Math.floor((rem%3600)/60),sec=rem%60; if(h)return `${h} hr ${m} min`; if(m)return sec?`${m} min ${sec} sec`:`${m} min`; return `${sec} sec`;};
       const compact=(n,d=2)=>Number(n).toLocaleString('en-US',{maximumFractionDigits:d});
-      function setSpeed(v){speed=Math.max(0,Math.min(C,Number.isFinite(v)?v:0));range.value=String(Math.round(speed/C*100));input.value=String(Number(speed.toFixed(3)));updateMetrics();draw();}
+      function setSpeed(v){advance(performance.now());speed=Math.max(0,Math.min(C,Number.isFinite(v)?v:0));history.push({time:simulatedTime,phase:phase,omega:speed/AU});range.value=String(Math.round(speed/C*100));input.value=String(Number(speed.toFixed(3)));updateMetrics();draw();}
       function updateMetrics(){const sec=speed===0?Infinity:2*Math.PI*AU/speed; const angular=speed/AU*180/Math.PI*60;
         ui.speedC.textContent=`${compact(speed/C*100,1)}% of c`;ui.period.textContent=fmtTime(sec);ui.daylight.textContent=fmtTime(sec/2);ui.angular.textContent=speed===0?'0° / min':`${compact(angular,2)}° / min`;ui.disk.textContent=speed===0?'∞':fmtTime(SOLAR_DIAMETER_DEG/angular*60);ui.delay.textContent=fmtTime(AU/C);
       }
       function draw(){const a=phase, cx=260,cy=174,r=126,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);ui.sun.setAttribute('cx',x);ui.sun.setAttribute('cy',y);ui.halo.setAttribute('cx',x);ui.halo.setAttribute('cy',y);ui.line.setAttribute('x2',x);ui.line.setAttribute('y2',y);
-        const deg=((a*180/Math.PI)%360+360)%360, visible=deg<=180;ui.phase.textContent=`${visible?(deg<1?'At sunrise':deg>179?'At sunset':`Daylight · ${Math.round(deg)}°`):`Night · ${Math.round(deg)}°`}`;
-        if(visible){const q=deg/180, sx=80+360*q, sy=260-180*Math.sin(Math.PI*q);ui.skySun.style.display='';ui.skyHalo.style.display='';ui.skySun.setAttribute('cx',sx);ui.skySun.setAttribute('cy',sy);ui.skyHalo.setAttribute('cx',sx);ui.skyHalo.setAttribute('cy',sy);ui.skyState.textContent=deg<3?'Rising':deg>177?'Setting':'Sun above horizon';ui.skyMessage.textContent=deg<3?'Rising in the east':deg>177?'Setting in the west':Math.abs(deg-90)<4?'At the zenith':`Across the sky · ${Math.round(deg/180*100)}% of daylight arc`;ui.skyCaption.textContent=deg<3?'Sunrise: the Sun enters the visible half of its orbit.':deg>177?'Sunset: the Sun leaves the visible half of its orbit.':'The Sun is moving along the equatorial sky arc.';}else{ui.skySun.style.display='none';ui.skyHalo.style.display='none';ui.skyState.textContent='Below horizon';ui.skyMessage.textContent='Night side of the orbit';ui.skyCaption.textContent='The Sun is on the far half of its orbit, below this observer’s horizon.';}
+        const emitted=observedPhase();document.getElementById('emitted-sun').setAttribute('cx',cx+r*Math.cos(emitted));document.getElementById('emitted-sun').setAttribute('cy',cy+r*Math.sin(emitted));
+        const currentDeg=((a*180/Math.PI)%360+360)%360;ui.phase.textContent=`Now · ${currentDeg.toFixed(1)}°`;
+        const deg=((emitted*180/Math.PI)%360+360)%360, visible=deg<=180;
+        if(visible){const theta=deg*Math.PI/180, sx=260-180*Math.cos(theta), sy=260-180*Math.sin(theta);ui.skySun.style.display='';ui.skyHalo.style.display='';ui.skySun.setAttribute('cx',sx);ui.skySun.setAttribute('cy',sy);ui.skyHalo.setAttribute('cx',sx);ui.skyHalo.setAttribute('cy',sy);ui.skyState.textContent=deg<3?'Rising':deg>177?'Setting':'Sun above horizon';ui.skyMessage.textContent=deg<3?'Rising in the east':deg>177?'Setting in the west':Math.abs(deg-90)<4?'At the zenith':`Across the sky · ${Math.round(deg/180*100)}% of daylight arc`;ui.skyCaption.textContent=deg<3?'Sunrise: the Sun enters the visible half of its orbit.':deg>177?'Sunset: the Sun leaves the visible half of its orbit.':'Arriving light: the Sun’s position 8 min 19 sec earlier. Symbol enlarged.';}else{ui.skySun.style.display='none';ui.skyHalo.style.display='none';ui.skyState.textContent='Below horizon';ui.skyMessage.textContent='Night side of the orbit';ui.skyCaption.textContent='The arriving sunlight places the Sun below the horizon, even if its current position is above it.';}
       }
-      function advance(now){const elapsed=Math.max(0,(now-last)/1000);last=now;const dt=playback===1?elapsed:Math.min(elapsed,.1);if(running&&speed>0)phase=(phase+(speed/AU)*playback*dt)%(Math.PI*2);}
+      function advance(now){const elapsed=Math.max(0,(now-last)/1000);last=now;const dt=playback===1?elapsed:Math.min(elapsed,.1);if(running){simulatedTime+=playback*dt;phase+=(speed/AU)*playback*dt;while(history.length>1&&history[1].time<=simulatedTime-lightDelay)history.shift();}}
       function frame(now){advance(now);draw();requestAnimationFrame(frame);}
       realTime.addEventListener('change',()=>{advance(performance.now());playback=realTime.checked?1:100;document.getElementById('playback-status').textContent=playback===1?'Playback: real time (1×)':'Playback: 100× time-lapse';document.getElementById('playback-note').textContent=playback===1?'Playback: real time (1×). Calculated times use the entered speed.':'Playback: 100× time-lapse. Calculated times use the entered speed.';draw();});
       range.addEventListener('input',()=>setSpeed(C*Number(range.value)/100));input.addEventListener('input',()=>{if(input.value!=='')setSpeed(Number(input.value));});input.addEventListener('change',()=>{if(input.value===''||!Number.isFinite(Number(input.value)))setSpeed(0);});
-      ui.play.addEventListener('click',()=>{advance(performance.now());running=!running;ui.play.textContent=running?'Pause animation':'Resume animation';ui.play.setAttribute('aria-pressed',String(running));last=performance.now();});document.getElementById('reset').addEventListener('click',()=>{last=performance.now();phase=0;draw();});
+      ui.play.addEventListener('click',()=>{advance(performance.now());running=!running;ui.play.textContent=running?'Pause animation':'Resume animation';ui.play.setAttribute('aria-pressed',String(running));last=performance.now();});document.getElementById('reset').addEventListener('click',()=>{last=performance.now();simulatedTime=0;phase=0;history=[{time:-lightDelay,phase:-speed/AU*lightDelay,omega:speed/AU}];draw();});
       updateMetrics();draw();requestAnimationFrame(frame);
     })();
   </script>
