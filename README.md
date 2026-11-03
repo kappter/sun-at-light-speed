@@ -1,4 +1,4 @@
-# Sun at Light Speed
+# Sun and Moon at Light Speed
 
 Kenneth Kapptie's interactive classroom thought experiment: hold Earth and the Sun one astronomical unit apart, keep Earth stationary, and give the Sun an adjustable orbital speed.
 
@@ -30,3 +30,9 @@ In repository Settings > Pages, choose Deploy from a branch, select main and /(r
 ## Source
 
 Recovered from the original Sun at Light Speed Site on November 3, 2026. The application HTML is unchanged. Site-specific hosting metadata and Git credentials are excluded.
+
+## Moon mode
+
+Select Moon to use NASA's average center-to-center Earth–Moon distance of 384,400 km. Moon mode automatically selects real-time playback. At c, one orbit is approximately 8.06 seconds, the visible half-orbit is 4.03 seconds, and light travel time is 1.28 seconds. The sky view uses that delayed motion history. Each orbit is fitted independently to the overhead diagram; it does not show Sun/Moon distances to a common physical scale. The Moon is a visible marker; lunar phases and illumination, surface parallax, gravity, and relativity are excluded.
+
+Distance source: https://science.nasa.gov/moon/by-the-numbers/
