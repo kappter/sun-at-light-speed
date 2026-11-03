@@ -17,9 +17,9 @@ Open `index.html` in a modern browser. No installation, dependencies, API keys, 
 
 ## Model
 
-This is a deliberately nonphysical visualization. Gravity, relativistic effects, and Earth's rotation are excluded; a real Sun cannot move at light speed. The displayed sky position follows the toy geometric model, rather than a full retarded-light rendering.
+This is a deliberately nonphysical visualization. Gravity, relativistic effects, and Earth's rotation are excluded; a real Sun cannot move at light speed. The overhead view shows the Sun's current position. The sky view uses the position at emission time, approximately 499 seconds earlier, for a central observer at fixed 1 AU. Speed changes propagate through this history after that delay. Finite Earth/Sun size, aberration, Doppler shifts, and relativistic appearance are not modeled.
 
-Constants: c = 299,792.458 km/s; 1 AU = 149,597,870.7 km. The animation runs at 100 times real time; calculated measurements use the selected speed without that multiplier.
+Constants: c = 299,792.458 km/s; 1 AU = 149,597,870.7 km. The Real time (1×) checkbox selects actual elapsed-time playback; unchecked uses 100× time-lapse. Calculated measurements use the selected orbital speed without the playback multiplier. Reset initializes a steady orbit at the selected speed.
 
 At c, one orbit takes approximately 52 minutes 15 seconds, horizon to horizon takes 26 minutes 8 seconds, and sunlight crosses 1 AU in about 8 minutes 19 seconds.
 
