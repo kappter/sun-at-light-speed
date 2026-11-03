@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive thought experiment: what would the Sun's motion across Earth's sky look like if it orbited Earth at a chosen speed?">
+  <title>Sun at Light Speed — a Solar System Thought Experiment</title>
+  <style>
+    :root{color-scheme:dark;--bg:#090b14;--panel:#111522;--panel2:#151a2a;--ink:#f3f0e9;--muted:#a7adbd;--line:#292e40;--sun:#ffc96b;--sun2:#ff9d57;--blue:#91a9ff;--cyan:#7de1d0;--violet:#b9a3ff;--shadow:0 18px 50px #0005}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#222746 0%,var(--bg) 48%);color:var(--ink);font:16px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+    .shell{max-width:1160px;margin:0 auto;padding:42px 28px 64px}.eyebrow{color:var(--cyan);font-size:.75rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}.hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;margin:10px 0 26px}.hero h1{font-size:clamp(2.1rem,5vw,4rem);line-height:1.02;letter-spacing:-.045em;margin:0;max-width:700px}.hero p{color:var(--muted);margin:14px 0 0;max-width:670px}.tag{border:1px solid #ffffff20;color:#c6cad8;border-radius:999px;padding:8px 13px;white-space:nowrap;font-size:.8rem;background:#ffffff08}
+    .controls{display:grid;grid-template-columns:minmax(250px,1fr) 190px auto;gap:22px;align-items:end;padding:20px 22px;background:#141827d9;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);margin-bottom:20px}.control-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px;font-size:.9rem}.control-label strong{font-variant-numeric:tabular-nums;color:var(--sun)}.range{width:100%;accent-color:var(--sun);cursor:pointer}.speed-number{width:100%;background:#0c101b;color:var(--ink);border:1px solid #343b50;border-radius:10px;padding:11px 12px;font:inherit;font-variant-numeric:tabular-nums}.speed-number:focus,.range:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.unit{font-size:.76rem;color:var(--muted);margin-top:5px}.actions{display:flex;gap:9px}.button{border:1px solid #414860;border-radius:11px;padding:10px 15px;background:#1c2233;color:var(--ink);font:inherit;font-weight:650;cursor:pointer}.button.primary{background:var(--sun);border-color:var(--sun);color:#20170a}.button:hover{filter:brightness(1.08)}
+    .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:0 0 20px}.metric{padding:15px 17px;background:linear-gradient(145deg,#171c2b,#111522);border:1px solid var(--line);border-radius:15px;min-height:105px}.metric .label{font-size:.77rem;color:var(--muted);letter-spacing:.02em}.metric .value{font-size:clamp(1.25rem,2.4vw,1.8rem);font-weight:700;letter-spacing:-.03em;margin-top:7px;font-variant-numeric:tabular-nums}.metric .sub{font-size:.76rem;color:#b6bccb;margin-top:3px}.metric:nth-child(1) .value{color:var(--sun)}.metric:nth-child(2) .value{color:var(--cyan)}.metric:nth-child(3) .value{color:var(--violet)}.metric:nth-child(4) .value{color:var(--blue)}.metric:nth-child(5) .value{color:var(--sun2)}
+    .views{display:grid;grid-template-columns:1fr 1fr;gap:16px}.view{background:linear-gradient(155deg,#141929,#0f1320);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}.view-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:18px 20px 0}.view-head h2{font-size:1rem;margin:0;letter-spacing:-.01em}.view-head p{color:var(--muted);font-size:.8rem;margin:4px 0 0}.live{display:inline-flex;align-items:center;gap:7px;color:#cad0dd;font-size:.73rem;white-space:nowrap}.dot{width:7px;height:7px;background:var(--cyan);border-radius:50%;box-shadow:0 0 12px var(--cyan)}svg{display:block;width:100%;height:auto}.orbit-svg{max-height:335px}.sky-svg{max-height:335px}.svg-label{fill:#aeb5c7;font:12px ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.svg-small{fill:#8f97aa;font:11px ui-sans-serif,system-ui,sans-serif}.svg-note{fill:#dadbe4;font:12px ui-sans-serif,system-ui,sans-serif}.star-glow{filter:drop-shadow(0 0 9px #ffc96b90)}.sky-caption{padding:0 20px 18px;color:var(--muted);font-size:.79rem;min-height:38px}.foot{margin-top:16px;padding:16px 19px;border-left:3px solid var(--violet);background:#151827a8;border-radius:0 13px 13px 0;color:#c1c5d1;font-size:.83rem}.foot strong{color:var(--ink)}.foot p{margin:0}.foot p+p{margin-top:6px}.readout{font-variant-numeric:tabular-nums;color:var(--ink)}
+    @media(max-width:820px){.controls{grid-template-columns:1fr 180px}.actions{grid-column:1/-1}.views{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(3,1fr)}.hero{align-items:flex-start;flex-direction:column}.tag{margin-top:0}}
+    @media(max-width:500px){.shell{padding:28px 15px 44px}.controls{grid-template-columns:1fr;gap:14px;padding:17px}.actions{grid-column:auto}.metrics{grid-template-columns:repeat(2,1fr);gap:8px}.metric{padding:12px;min-height:96px}.hero h1{font-size:2.35rem}.view-head{padding-left:15px;padding-right:15px}.sky-caption{padding-left:15px;padding-right:15px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell" id="app">
+    <div class="eyebrow">A classroom thought experiment</div>
+    <header class="hero">
+      <div><h1>What would light speed look like?</h1><p>Keep Earth and the Sun 1 AU apart. Give the Sun a speed. Watch one orbit from above—and one day's arc from an observer at Earth's equator.</p></div>
+      <div class="tag">Toy model · gravity off</div>
+    </header>
+
+    <section class="controls" aria-label="Model controls">
+      <div><div class="control-label"><label for="speed-range">Sun's orbital speed</label><strong id="speed-c">100% of c</strong></div><input class="range" id="speed-range" type="range" min="0" max="100" step="1" value="100" aria-label="Sun's speed as a percentage of light speed"><div class="unit">0–100% of light speed</div></div>
+      <div><div class="control-label"><label for="speed-value">Enter speed</label></div><input class="speed-number" id="speed-value" type="number" min="0" max="299792.458" step="1" value="299792.458" inputmode="decimal"><div class="unit">kilometers per second</div></div>
+      <div class="actions"><button class="button primary" id="play" type="button" aria-pressed="true">Pause animation</button><button class="button" id="reset" type="button">Reset Sun</button></div>
+    </section>
+
+    <section class="metrics" aria-label="Calculated results" aria-live="polite">
+      <div class="metric"><div class="label">One complete orbit</div><div class="value" id="period">52 min 15 sec</div><div class="sub">Around the full 1 AU circle</div></div>
+      <div class="metric"><div class="label">East horizon to west</div><div class="value" id="daylight">26 min 8 sec</div><div class="sub">Half an orbit, at the equator</div></div>
+      <div class="metric"><div class="label">Apparent sky drift</div><div class="value" id="angular">6.89° / min</div><div class="sub">Direction changes 360° per orbit</div></div>
+      <div class="metric"><div class="label">Across its own width</div><div class="value" id="disk-crossing">4.6 sec</div><div class="sub">Sun's apparent 0.533° diameter</div></div>
+      <div class="metric"><div class="label">Sunlight travel delay</div><div class="value" id="light-delay">8 min 19 sec</div><div class="sub">From 1 AU, at speed c</div></div>
+    </section>
+
+    <section class="views" aria-label="Two views of the model">
+      <article class="view">
+        <div class="view-head"><div><h2>Orbit view</h2><p>Looking down on the equatorial plane</p></div><div class="live"><span class="dot"></span><span id="phase-label">At sunrise · 0°</span></div></div>
+        <svg class="orbit-svg" viewBox="0 0 520 340" role="img" aria-labelledby="orbit-title orbit-desc">
+          <title id="orbit-title">The Sun orbiting Earth at the selected speed</title><desc id="orbit-desc">A top-down diagram showing Earth at the center and the Sun moving around a circular orbit with a radius of one astronomical unit.</desc>
+          <defs><radialGradient id="earth-fill"><stop stop-color="#6176d7"/><stop offset="1" stop-color="#202b5b"/></radialGradient><radialGradient id="sun-fill"><stop stop-color="#fff4bf"/><stop offset=".55" stop-color="#ffd375"/><stop offset="1" stop-color="#ff9b55"/></radialGradient></defs>
+          <circle cx="260" cy="174" r="126" fill="none" stroke="#353b52" stroke-width="1.5" stroke-dasharray="3 7"/>
+          <circle cx="260" cy="174" r="3" fill="#74809b"/><line id="radius-line" x1="260" y1="174" x2="386" y2="174" stroke="#7380a2" stroke-width="1" stroke-dasharray="4 5"/>
+          <text x="270" y="163" class="svg-small">1 AU</text>
+          <circle cx="260" cy="174" r="17" fill="url(#earth-fill)" stroke="#97aaff" stroke-width="1.2"/><path d="M252 166c4 2 4 4 7 5 3 1 1 4 4 6l-4 6-6-3-2-6-4-3z" fill="#8dd9c2" opacity=".9"/><text x="260" y="212" text-anchor="middle" class="svg-label">EARTH</text>
+          <circle id="sun-halo" cx="386" cy="174" r="18" fill="#ffc96b" opacity=".13"/><circle id="sun-dot" class="star-glow" cx="386" cy="174" r="8" fill="url(#sun-fill)"/>
+          <text x="260" y="315" text-anchor="middle" class="svg-small">Animation is a 100× time-lapse; the results above use the entered speed.</text>
+        </svg>
+      </article>
+      <article class="view">
+        <div class="view-head"><div><h2>Equatorial sky</h2><p>What the observer sees above the horizon</p></div><div class="live"><span id="sky-state">Sun above horizon</span></div></div>
+        <svg class="sky-svg" viewBox="0 0 520 340" role="img" aria-labelledby="sky-title sky-desc">
+          <title id="sky-title">The Sun's apparent path across the equatorial sky</title><desc id="sky-desc">A half-circle arc from the east horizon to the west horizon. The Sun is visible on this arc during half of its orbit.</desc>
+          <defs><linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#24345a" stop-opacity=".74"/><stop offset="1" stop-color="#141a2b" stop-opacity=".14"/></linearGradient></defs>
+          <path d="M80 260 A180 180 0 0 1 440 260 L80 260Z" fill="url(#sky-grad)"/>
+          <path d="M80 260 A180 180 0 0 1 440 260" fill="none" stroke="#69748e" stroke-width="1.5" stroke-dasharray="4 6"/>
+          <line x1="55" y1="260" x2="465" y2="260" stroke="#616b82" stroke-width="1.5"/>
+          <path d="M80 260 A180 180 0 0 1 440 260" fill="none" stroke="#d3a758" stroke-width="2" opacity=".48"/>
+          <circle cx="260" cy="80" r="3" fill="#8190ae"/><text x="260" y="65" text-anchor="middle" class="svg-small">ZENITH</text>
+          <text x="70" y="285" text-anchor="middle" class="svg-label">EAST</text><text x="450" y="285" text-anchor="middle" class="svg-label">WEST</text>
+          <circle id="sky-sun-halo" cx="80" cy="260" r="18" fill="#ffc96b" opacity=".15"/><circle id="sky-sun" class="star-glow" cx="80" cy="260" r="8" fill="url(#sun-fill)"/>
+          <text id="sky-message" x="260" y="316" text-anchor="middle" class="svg-note">Rising in the east</text>
+        </svg>
+        <div class="sky-caption" id="sky-caption">One half-orbit is visible above the horizon: sunrise to sunset takes half a revolution.</div>
+      </article>
+    </section>
+
+    <aside class="foot"><p><strong>What this means:</strong> at 1 AU, the circle is about 940 million km around. At light speed, the Sun would sweep from horizon to horizon in about 26 minutes. Its light would still take about 8 minutes 19 seconds to reach us.</p><p>This model assigns a speed to the Sun and ignores gravity, relativity, and Earth’s rotation. A real Sun cannot travel at light speed. The animation runs at 100× time-lapse so the motion is visible; the calculated times are not sped up.</p></aside>
+  </main>
+  <script>
+    (()=>{
+      const C=299792.458, AU=149597870.7, SOLAR_DIAMETER_DEG=0.533, PLAYBACK=100;
+      const range=document.getElementById('speed-range'), input=document.getElementById('speed-value');
+      const ui={speedC:document.getElementById('speed-c'),period:document.getElementById('period'),daylight:document.getElementById('daylight'),angular:document.getElementById('angular'),disk:document.getElementById('disk-crossing'),delay:document.getElementById('light-delay'),sun:document.getElementById('sun-dot'),halo:document.getElementById('sun-halo'),line:document.getElementById('radius-line'),skySun:document.getElementById('sky-sun'),skyHalo:document.getElementById('sky-sun-halo'),skyState:document.getElementById('sky-state'),skyMessage:document.getElementById('sky-message'),skyCaption:document.getElementById('sky-caption'),phase:document.getElementById('phase-label'),play:document.getElementById('play')};
+      let speed=C, phase=0, running=true, last=performance.now();
+      const fmtTime=(s)=>{if(!Number.isFinite(s))return '∞'; if(s<60)return `${s.toFixed(s<10?1:0)} sec`; let rem=Math.round(s),h=Math.floor(rem/3600),m=Math.floor((rem%3600)/60),sec=rem%60; if(h)return `${h} hr ${m} min`; if(m)return sec?`${m} min ${sec} sec`:`${m} min`; return `${sec} sec`;};
+      const compact=(n,d=2)=>Number(n).toLocaleString('en-US',{maximumFractionDigits:d});
+      function setSpeed(v){speed=Math.max(0,Math.min(C,Number.isFinite(v)?v:0));range.value=String(Math.round(speed/C*100));input.value=String(Number(speed.toFixed(3)));updateMetrics();draw();}
+      function updateMetrics(){const sec=speed===0?Infinity:2*Math.PI*AU/speed; const angular=speed/AU*180/Math.PI*60;
+        ui.speedC=`${compact(speed/C*100,1)}% of c`;ui.period=fmtTime(sec);ui.daylight=fmtTime(sec/2);ui.angular=speed===0?'0° / min':`${compact(angular,2)}° / min`;ui.disk=speed===0?'∞':fmtTime(SOLAR_DIAMETER_DEG/angular*60);ui.delay=fmtTime(AU/C);
+      }
+      function draw(){const a=phase, cx=260,cy=174,r=126,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);ui.sun.setAttribute('cx',x);ui.sun.setAttribute('cy',y);ui.halo.setAttribute('cx',x);ui.halo.setAttribute('cy',y);ui.line.setAttribute('x2',x);ui.line.setAttribute('y2',y);
+        const deg=((a*180/Math.PI)%360+360)%360, visible=deg<=180;ui.phase.textContent=`${visible?(deg<1?'At sunrise':deg>179?'At sunset':`Daylight · ${Math.round(deg)}°`):`Night · ${Math.round(deg)}°`}`;
+        if(visible){const q=deg/180, sx=80+360*q, sy=260-180*Math.sin(Math.PI*q);ui.skySun.style.display='';ui.skyHalo.style.display='';ui.skySun.setAttribute('cx',sx);ui.skySun.setAttribute('cy',sy);ui.skyHalo.setAttribute('cx',sx);ui.skyHalo.setAttribute('cy',sy);ui.skyState.textContent=deg<3?'Rising':deg>177?'Setting':'Sun above horizon';ui.skyMessage.textContent=deg<3?'Rising in the east':deg>177?'Setting in the west':Math.abs(deg-90)<4?'At the zenith':`Across the sky · ${Math.round(deg/180*100)}% of daylight arc`;ui.skyCaption.textContent=deg<3?'Sunrise: the Sun enters the visible half of its orbit.':deg>177?'Sunset: the Sun leaves the visible half of its orbit.':'The Sun is moving along the equatorial sky arc.';}else{ui.skySun.style.display='none';ui.skyHalo.style.display='none';ui.skyState.textContent='Below horizon';ui.skyMessage.textContent='Night side of the orbit';ui.skyCaption.textContent='The Sun is on the far half of its orbit, below this observer’s horizon.';}
+      }
+      function frame(now){const dt=Math.min((now-last)/1000,.1);last=now;if(running&&speed>0)phase=(phase+(speed/AU)*PLAYBACK*dt)%(Math.PI*2);draw();requestAnimationFrame(frame);}
+      range.addEventListener('input',()=>setSpeed(C*Number(range.value)/100));input.addEventListener('input',()=>{if(input.value!=='')setSpeed(Number(input.value));});input.addEventListener('change',()=>{if(input.value===''||!Number.isFinite(Number(input.value)))setSpeed(0);});
+      ui.play.addEventListener('click',()=>{running=!running;ui.play.textContent=running?'Pause animation':'Resume animation';ui.play.setAttribute('aria-pressed',String(running));last=performance.now();});document.getElementById('reset').addEventListener('click',()=>{phase=0;draw();});
+      updateMetrics();draw();requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
