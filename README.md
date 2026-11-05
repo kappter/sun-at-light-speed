@@ -138,4 +138,4 @@ In repository Settings > Pages, choose **Deploy from a branch**, select \`main\`
 
 ## Source
 
-Recovered from the original Sun at Light Speed site on November 3, 2026. The application HTML is unchanged. Site-specific hosting metadata and Git credentials are excluded.
+Recovered from the original Sun at Light Speed site on November 3, 2026. The repository version now includes the Moon comparison and color-coded planetary distance layers. Site-specific hosting metadata and Git credentials are excluded.
