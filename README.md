@@ -1,6 +1,6 @@
-# Sun and Moon at Light Speed
+# Sun, Moon, and Planets at Light Speed
 
-Kenneth Kapptie's interactive classroom thought experiment: hold Earth fixed, place the Sun or Moon on a circular path around Earth's center, and give the selected body an adjustable orbital speed.
+Kenneth Kapptie's interactive classroom thought experiment: hold Earth fixed, give the Sun or Moon an adjustable orbital speed, and compare the planets' possible Earth-distance ranges.
 
 Original hosted app: https://light-speed-sky.kappter.chatgpt.site
 
@@ -12,6 +12,7 @@ Open \`index.html\` in a modern browser. No installation, dependencies, API keys
 
 - Adjust the orbital speed from zero to the speed of light using the slider or numeric input.
 - Compare the overhead orbit with the equatorial observer's sky.
+- Toggle Mercury through Neptune to view color-coded Earth-distance bands and their light-travel times; switch between inner-system and full-system map ranges.
 - Pause or reset the animation.
 - Read the orbital period, horizon-to-horizon time, angular speed, disk-crossing time, and light-travel delay.
 
@@ -25,6 +26,28 @@ This is a geometric thought experiment, not a physically possible orbit. Earth i
 The speed input is the body's tangential speed along that circle. Gravity, Earth's rotation, orbital eccentricity and inclination, relativistic effects, and changes in the Earth–body distance are excluded. A massive Sun or Moon cannot travel at the speed of light. The sky view treats the observer as located at Earth's equator in the orbit plane; it shows the body's earlier position when its light reaches Earth. The Moon is drawn as a visible marker, without lunar phases or illumination.
 
 The overhead diagram fits each selected orbit to the same graphic size. It therefore does **not** show Sun and Moon distances to a common scale.
+
+### Planet distance layers
+
+The map uses each planet's mean Sun distance (its approximate semimajor axis) and assumes circular, coplanar orbits. If Earth's mean Sun distance is 1 AU and a planet's is $a$, the possible Earth-distance range is:
+
+$
+d_{\min} = |a - 1\,\mathrm{AU}|
+\qquad
+d_{\max} = a + 1\,\mathrm{AU}
+$
+
+The near end occurs when Earth and the planet are on the same side of the Sun; the far end occurs when they are on opposite sides. These are a range of possible separations, not a single average Earth distance or live planetary positions. The map's 2 AU, 8 AU, and 32 AU views are linear; bars beyond the selected limit are clipped.
+
+| Planet | Mean distance from Sun | Possible distance from Earth | Light travel at $c$ |
+|---|---:|---:|---:|
+| Mercury | 0.387 AU | 0.613–1.387 AU | 5 min 6 sec–11 min 31 sec |
+| Venus | 0.723 AU | 0.277–1.723 AU | 2 min 18 sec–14 min 21 sec |
+| Mars | 1.524 AU | 0.524–2.524 AU | 4 min 22 sec–21 min 0 sec |
+| Jupiter | 5.204 AU | 4.204–6.204 AU | 34 min 58 sec–51 min 36 sec |
+| Saturn | 9.572 AU | 8.572–10.572 AU | 1 hr 11 min–1 hr 28 min |
+| Uranus | 19.165 AU | 18.165–20.165 AU | 2 hr 31 min–2 hr 48 min |
+| Neptune | 30.181 AU | 29.181–31.181 AU | 4 hr 3 min–4 hr 19 min |
 
 ## Orbital math
 
@@ -107,6 +130,7 @@ The overhead view shows the current position. The sky view uses the position at 
 - Mean lunar distance: [JPL Solar System Dynamics, Lunar Distance glossary](https://ssd.jpl.nasa.gov/glossary/LD.html) — mean semimajor axis 384,400 km. NASA also describes 384,400 km as the average Earth–Moon distance in [Moon by the Numbers](https://science.nasa.gov/moon/by-the-numbers/).
 - Lunar diameter: [NASA/JPL, Comparing Apparent Sizes of Moons](https://science.nasa.gov/resource/illustration-comparing-apparent-sizes-of-moons/) — 3,474 km.
 - Sun apparent diameter used by this model: 0.533° (a fixed model input).
+- Mean planet distances from the Sun: [NASA, Planet Sizes and Locations in Our Solar System](https://science.nasa.gov/solar-system/planet-sizes-and-locations-in-our-solar-system/).
 
 ## GitHub Pages
 
