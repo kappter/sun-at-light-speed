@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="An interactive thought experiment: what would the Sun's motion across Earth's sky look like if it orbited Earth at a chosen speed?">
-  <title>Sun &amp; Moon at Light Speed — an Earth-Sky Thought Experiment</title>
+  <meta name="description" content="Explore a light-speed orbit thought experiment for the Sun, Moon, and the planets using a speed control and Earth-distance map.">
+  <title>Sun, Moon &amp; Planets at Light Speed — an Earth-Sky Thought Experiment</title>
   <style>
     :root{color-scheme:dark;--bg:#090b14;--panel:#111522;--panel2:#151a2a;--ink:#f3f0e9;--muted:#a7adbd;--line:#292e40;--sun:#ffc96b;--sun2:#ff9d57;--blue:#91a9ff;--cyan:#7de1d0;--violet:#b9a3ff;--shadow:0 18px 50px #0005}
     *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#222746 0%,var(--bg) 48%);color:var(--ink);font:16px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
     .shell{max-width:1160px;margin:0 auto;padding:42px 28px 64px}.eyebrow{color:var(--cyan);font-size:.75rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}.hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;margin:10px 0 26px}.hero h1{font-size:clamp(2.1rem,5vw,4rem);line-height:1.02;letter-spacing:-.045em;margin:0;max-width:700px}.hero p{color:var(--muted);margin:14px 0 0;max-width:670px}.tag{border:1px solid #ffffff20;color:#c6cad8;border-radius:999px;padding:8px 13px;white-space:nowrap;font-size:.8rem;background:#ffffff08}
     .controls{display:grid;grid-template-columns:minmax(250px,1fr) 190px auto;gap:22px;align-items:end;padding:20px 22px;background:#141827d9;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);margin-bottom:20px}.control-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px;font-size:.9rem}.control-label strong{font-variant-numeric:tabular-nums;color:var(--sun)}.range{width:100%;accent-color:var(--sun);cursor:pointer}.speed-number{width:100%;background:#0c101b;color:var(--ink);border:1px solid #343b50;border-radius:10px;padding:11px 12px;font:inherit;font-variant-numeric:tabular-nums}.speed-number:focus,.range:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.unit{font-size:.76rem;color:var(--muted);margin-top:5px}.actions{display:flex;gap:9px}.playback-control{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:.85rem}.playback-control label{display:inline-flex;align-items:center;gap:9px;cursor:pointer;color:var(--ink)}.playback-control input{width:18px;height:18px;accent-color:var(--sun)}.playback-control input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.button{border:1px solid #414860;border-radius:11px;padding:10px 15px;background:#1c2233;color:var(--ink);font:inherit;font-weight:650;cursor:pointer}.button.primary{background:var(--sun);border-color:var(--sun);color:#20170a}.button:hover{filter:brightness(1.08)}
     .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:0 0 20px}.metric{padding:15px 17px;background:linear-gradient(145deg,#171c2b,#111522);border:1px solid var(--line);border-radius:15px;min-height:105px}.metric .label{font-size:.77rem;color:var(--muted);letter-spacing:.02em}.metric .value{font-size:clamp(1.25rem,2.4vw,1.8rem);font-weight:700;letter-spacing:-.03em;margin-top:7px;font-variant-numeric:tabular-nums}.metric .sub{font-size:.76rem;color:#b6bccb;margin-top:3px}.metric:nth-child(1) .value{color:var(--sun)}.metric:nth-child(2) .value{color:var(--cyan)}.metric:nth-child(3) .value{color:var(--violet)}.metric:nth-child(4) .value{color:var(--blue)}.metric:nth-child(5) .value{color:var(--sun2)}
+    .planet-panel{margin:0 0 20px;padding:20px 22px;background:linear-gradient(155deg,#141929,#0f1320);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.planet-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:14px}.planet-panel-head h2{font-size:1rem;margin:0}.planet-panel-head p{color:var(--muted);font-size:.82rem;margin:5px 0 0;max-width:690px}.planet-zoom{min-width:150px;background:#0c101b;color:var(--ink);border:1px solid #343b50;border-radius:10px;padding:9px 11px;font:inherit}.planet-toggles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0 17px}.planet-toggle{display:grid;grid-template-columns:17px 10px minmax(0,1fr);align-items:start;gap:8px;padding:10px 11px;background:#ffffff06;border:1px solid #ffffff12;border-radius:11px;cursor:pointer}.planet-toggle input{width:16px;height:16px;margin:2px 0 0;accent-color:var(--planet-color)}.planet-swatch{width:9px;height:9px;border-radius:50%;background:var(--planet-color);margin-top:5px;box-shadow:0 0 8px color-mix(in srgb,var(--planet-color) 70%,transparent)}.planet-toggle strong{display:block;color:var(--planet-color);font-size:.86rem}.planet-toggle small{display:block;color:#b5bbca;font-size:.71rem;line-height:1.4;margin-top:3px}.planet-map-scroll{overflow-x:auto;border-radius:11px;background:#090d17a6}.planet-distance-svg{display:block;width:100%;min-width:680px;height:auto}.planet-map-note{font-size:.76rem;color:var(--muted);margin:10px 0 0}.planet-map-note a{color:var(--cyan)}.planet-map-status{font-size:.75rem;color:#c5cada;margin:4px 0 0}
     .views{display:grid;grid-template-columns:1fr 1fr;gap:16px}.view{background:linear-gradient(155deg,#141929,#0f1320);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}.view-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:18px 20px 0}.view-head h2{font-size:1rem;margin:0;letter-spacing:-.01em}.view-head p{color:var(--muted);font-size:.8rem;margin:4px 0 0}.live{display:inline-flex;align-items:center;gap:7px;color:#cad0dd;font-size:.73rem;white-space:nowrap}.dot{width:7px;height:7px;background:var(--cyan);border-radius:50%;box-shadow:0 0 12px var(--cyan)}svg{display:block;width:100%;height:auto}.orbit-svg{max-height:335px}.sky-svg{max-height:335px}.svg-label{fill:#aeb5c7;font:12px ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.svg-small{fill:#8f97aa;font:11px ui-sans-serif,system-ui,sans-serif}.svg-note{fill:#dadbe4;font:12px ui-sans-serif,system-ui,sans-serif}.star-glow{filter:drop-shadow(0 0 9px #ffc96b90)}.sky-caption{padding:0 20px 18px;color:var(--muted);font-size:.79rem;min-height:38px}.foot{margin-top:16px;padding:16px 19px;border-left:3px solid var(--violet);background:#151827a8;border-radius:0 13px 13px 0;color:#c1c5d1;font-size:.83rem}.foot strong{color:var(--ink)}.foot p{margin:0}.foot p+p{margin-top:6px}.readout{font-variant-numeric:tabular-nums;color:var(--ink)}
     @media(max-width:820px){.controls{grid-template-columns:1fr 180px}.actions{grid-column:1/-1}.views{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(3,1fr)}.hero{align-items:flex-start;flex-direction:column}.tag{margin-top:0}}
     @media(max-width:500px){.shell{padding:28px 15px 44px}.controls{grid-template-columns:1fr;gap:14px;padding:17px}.actions{grid-column:auto}.metrics{grid-template-columns:repeat(2,1fr);gap:8px}.metric{padding:12px;min-height:96px}.hero h1{font-size:2.35rem}.view-head{padding-left:15px;padding-right:15px}.sky-caption{padding-left:15px;padding-right:15px}}
@@ -39,6 +40,29 @@
       <div class="metric"><div class="label">Apparent sky drift</div><div class="value" id="angular">6.89° / min</div><div class="sub">Direction changes 360° per orbit</div></div>
       <div class="metric"><div class="label">Across its own width</div><div class="value" id="disk-crossing">4.6 sec</div><div class="sub" id="diameter-sub">Sun's apparent 0.533° diameter</div></div>
       <div class="metric"><div class="label">Light-travel delay to Earth</div><div class="value" id="light-delay">8 min 19 sec</div><div class="sub" id="delay-sub">From 1 AU, at speed c</div></div>
+    </section>
+
+    <section class="planet-panel" aria-labelledby="planet-panel-title">
+      <div class="planet-panel-head">
+        <div><h2 id="planet-panel-title">Planet distance layers</h2><p>Each color band shows how close to or far from Earth a planet could be, using its mean distance from the Sun and a simplified circular-orbit model.</p></div>
+        <label for="planet-zoom">Map range <select id="planet-zoom" class="planet-zoom"><option value="2">Inner system · 2 AU</option><option value="8">Jupiter region · 8 AU</option><option value="32" selected>All planets · 32 AU</option></select></label>
+      </div>
+      <div class="planet-toggles" role="group" aria-label="Show or hide planet distance layers">
+        <label class="planet-toggle" style="--planet-color:#d3a77b"><input type="checkbox" data-planet-layer="mercury" checked aria-label="Show Mercury distance layer"><span class="planet-swatch"></span><span><strong>Mercury</strong><small id="mercury-distance"></small></span></label>
+        <label class="planet-toggle" style="--planet-color:#f1bd7c"><input type="checkbox" data-planet-layer="venus" checked aria-label="Show Venus distance layer"><span class="planet-swatch"></span><span><strong>Venus</strong><small id="venus-distance"></small></span></label>
+        <label class="planet-toggle" style="--planet-color:#ff7d72"><input type="checkbox" data-planet-layer="mars" checked aria-label="Show Mars distance layer"><span class="planet-swatch"></span><span><strong>Mars</strong><small id="mars-distance"></small></span></label>
+        <label class="planet-toggle" style="--planet-color:#e8b35f"><input type="checkbox" data-planet-layer="jupiter" checked aria-label="Show Jupiter distance layer"><span class="planet-swatch"></span><span><strong>Jupiter</strong><small id="jupiter-distance"></small></span></label>
+        <label class="planet-toggle" style="--planet-color:#d9d09a"><input type="checkbox" data-planet-layer="saturn" checked aria-label="Show Saturn distance layer"><span class="planet-swatch"></span><span><strong>Saturn</strong><small id="saturn-distance"></small></span></label>
+        <label class="planet-toggle" style="--planet-color:#76d4d2"><input type="checkbox" data-planet-layer="uranus" checked aria-label="Show Uranus distance layer"><span class="planet-swatch"></span><span><strong>Uranus</strong><small id="uranus-distance"></small></span></label>
+        <label class="planet-toggle" style="--planet-color:#7893ff"><input type="checkbox" data-planet-layer="neptune" checked aria-label="Show Neptune distance layer"><span class="planet-swatch"></span><span><strong>Neptune</strong><small id="neptune-distance"></small></span></label>
+      </div>
+      <div class="planet-map-scroll">
+        <svg id="planet-distance-map" class="planet-distance-svg" viewBox="0 0 960 390" role="img" aria-labelledby="planet-map-title planet-map-desc">
+          <title id="planet-map-title">Possible Earth-to-planet distance ranges</title><desc id="planet-map-desc">Colored horizontal bands show the minimum and maximum distance from Earth for each planet, assuming circular coplanar orbits. The axis is linear in astronomical units.</desc>
+        </svg>
+      </div>
+      <p class="planet-map-status" id="planet-map-status" aria-live="polite"></p>
+      <p class="planet-map-note">Range estimate: closest = |planet’s mean Sun distance − 1 AU|; farthest = their sum. This assumes circular, coplanar orbits and omits orbital eccentricity and current positions. Sun-distance values: <a href="https://science.nasa.gov/solar-system/planet-sizes-and-locations-in-our-solar-system/" target="_blank" rel="noreferrer">NASA</a>.</p>
     </section>
 
     <section class="views" aria-label="Two views of the model">
@@ -75,7 +99,7 @@
       </article>
     </section>
 
-    <aside class="foot"><p id="model-summary"></p><p>This is a geometric thought experiment: Earth is stationary, the orbit is circular, and gravity, relativity, and Earth's rotation are excluded. A real Sun or Moon cannot travel at light speed. Distances are measured from Earth's center; surface parallax, lunar phases, and illumination changes are not modeled. The Moon is treated as a visible marker.</p><p>Use Real time (1×) for one simulated second per real second; unchecked uses 100× time-lapse. Calculated times always use the entered speed. Speed changes reach the sky view after the displayed light-travel delay. Reset and body selection start an established steady orbit at the selected speed. Symbols are enlarged; each overhead orbit fits the same diagram, so its physical scale changes.</p><p>Moon distance: <a href="https://science.nasa.gov/moon/by-the-numbers/" style="color:var(--cyan)">NASA's average Earth–Moon distance of 384,400 km</a>.</p></aside>
+    <aside class="foot"><p id="model-summary"></p><p>This is a geometric thought experiment: Earth is stationary, the orbit is circular, and gravity, relativity, and Earth's rotation are excluded. A real Sun or Moon cannot travel at light speed. Distances are measured from Earth's center; surface parallax, lunar phases, and illumination changes are not modeled. Planet layers show possible Earth-distance ranges using mean Sun distances in a circular, coplanar estimate. The Moon is treated as a visible marker.</p><p>Use Real time (1×) for one simulated second per real second; unchecked uses 100× time-lapse. Calculated times always use the entered speed. Speed changes reach the sky view after the displayed light-travel delay. Reset and body selection start an established steady orbit at the selected speed. Symbols are enlarged; each overhead orbit fits the same diagram, so its physical scale changes.</p><p>Moon distance: <a href="https://science.nasa.gov/moon/by-the-numbers/" style="color:var(--cyan)">NASA's average Earth–Moon distance of 384,400 km</a>.</p></aside>
   </main>
   <script>
     (()=>{
@@ -83,6 +107,44 @@
       const range=document.getElementById('speed-range'), input=document.getElementById('speed-value');
       const ui={speedC:document.getElementById('speed-c'),period:document.getElementById('period'),daylight:document.getElementById('daylight'),angular:document.getElementById('angular'),disk:document.getElementById('disk-crossing'),delay:document.getElementById('light-delay'),sun:document.getElementById('sun-dot'),halo:document.getElementById('sun-halo'),line:document.getElementById('radius-line'),skySun:document.getElementById('sky-sun'),skyHalo:document.getElementById('sky-sun-halo'),skyState:document.getElementById('sky-state'),skyMessage:document.getElementById('sky-message'),skyCaption:document.getElementById('sky-caption'),phase:document.getElementById('phase-label'),play:document.getElementById('play')};
       const realTime=document.getElementById('real-time');
+      const PLANETS=[
+        {key:'mercury',name:'Mercury',meanKm:57900000,color:'#d3a77b'},
+        {key:'venus',name:'Venus',meanKm:108200000,color:'#f1bd7c'},
+        {key:'mars',name:'Mars',meanKm:228000000,color:'#ff7d72'},
+        {key:'jupiter',name:'Jupiter',meanKm:778500000,color:'#e8b35f'},
+        {key:'saturn',name:'Saturn',meanKm:1432000000,color:'#d9d09a'},
+        {key:'uranus',name:'Uranus',meanKm:2867000000,color:'#76d4d2'},
+        {key:'neptune',name:'Neptune',meanKm:4515000000,color:'#7893ff'}
+      ];
+      function planetEarthRange(p){const a=p.meanKm/AU;return {a,min:Math.abs(a-1),max:a+1};}
+      function drawPlanetDistanceMap(){
+        const svg=document.getElementById('planet-distance-map'), scale=Number(document.getElementById('planet-zoom').value);
+        const left=142,right=928,top=57,step=33,axisY=326,width=right-left;
+        const x=au=>left+Math.max(0,Math.min(scale,au))/scale*width;
+        const ticks=scale===2?[0,.5,1,1.5,2]:scale===8?[0,1,2,4,6,8]:[0,1,5,10,20,30,32];
+        const parts=[`<title id="planet-map-title">Possible Earth-to-planet distance ranges</title><desc id="planet-map-desc">Colored range bars show minimum to maximum Earth distances under a circular, coplanar orbit estimate. The horizontal axis is linear in astronomical units.</desc>`];
+        parts.push(`<text x="${left}" y="24" fill="#c7cede" font-size="13">Possible Earth distance</text><text x="${right}" y="24" text-anchor="end" fill="#9099ac" font-size="11">Linear scale · AU</text>`);
+        parts.push(`<line x1="${left}" y1="40" x2="${left}" y2="${axisY}" stroke="#8090b4" stroke-width="1.5"/><text x="${left+5}" y="${axisY+29}" fill="#dce4ff" font-size="11">EARTH · 0</text>`);
+        const sunX=x(1);parts.push(`<line x1="${sunX}" y1="42" x2="${sunX}" y2="${axisY}" stroke="#ffc96b" stroke-width="1.4" stroke-dasharray="4 5" opacity=".9"/><text x="${sunX+5}" y="43" fill="#ffc96b" font-size="10">Sun · 1 AU</text>`);
+        for(const tick of ticks){const tx=x(tick);parts.push(`<line x1="${tx}" y1="48" x2="${tx}" y2="${axisY+3}" stroke="#2e3548" stroke-width="1"/><line x1="${tx}" y1="${axisY}" x2="${tx}" y2="${axisY+5}" stroke="#a6afc4" stroke-width="1"/><text x="${tx}" y="${axisY+18}" text-anchor="middle" fill="#aeb6c8" font-size="10">${tick}</text>`);}
+        let active=0,offScale=0;
+        PLANETS.forEach((p,i)=>{
+          const y=top+i*step,{a,min,max}=planetEarthRange(p),enabled=document.querySelector(`[data-planet-layer="${p.key}"]`).checked;
+          document.getElementById(p.key+'-distance').innerHTML=`Mean Sun distance: ${compact(p.meanKm/1e6,1)} million km (${a.toFixed(3)} AU)<br>Earth range: ${min.toFixed(3)}–${max.toFixed(3)} AU<br>Light at c: ${fmtTime(min*AU/C)}–${fmtTime(max*AU/C)}`;
+          parts.push(`<line x1="${left}" y1="${y+9}" x2="${right}" y2="${y+9}" stroke="#ffffff0d" stroke-width="1"/>`);
+          parts.push(`<text x="18" y="${y+4}" fill="${p.color}" opacity="${enabled?1:.35}" font-size="12" font-weight="600">${p.name}</text>`);
+          if(!enabled)return;active++;
+          const start=Math.min(scale,min),end=Math.min(scale,max),x1=x(start),x2=x(end),clipped=min>scale||max>scale;
+          if(min>scale)offScale++;
+          const title=`${p.name}: mean Sun distance ${a.toFixed(3)} AU; Earth range ${min.toFixed(3)}–${max.toFixed(3)} AU; light travel ${fmtTime(min*AU/C)}–${fmtTime(max*AU/C)}.`;
+          parts.push(`<g><title>${title}</title><line x1="${x1}" y1="${y+9}" x2="${x2}" y2="${y+9}" stroke="${p.color}" stroke-width="8" stroke-linecap="round" opacity=".76"/><circle cx="${x1}" cy="${y+9}" r="4.5" fill="${p.color}" stroke="#0c101b" stroke-width="1.5"/>${clipped?`<path d="M ${right-8} ${y+3} L ${right} ${y+9} L ${right-8} ${y+15}" fill="none" stroke="${p.color}" stroke-width="2"/>`:`<circle cx="${x2}" cy="${y+9}" r="4.5" fill="${p.color}" stroke="#0c101b" stroke-width="1.5"/>`}</g>`);
+        });
+        svg.innerHTML=parts.join('');
+        const status=document.getElementById('planet-map-status');
+        status.textContent=`${active} planet ${active===1?'layer':'layers'} shown · 1 AU = ${compact(AU,0)} km · bars beyond ${scale} AU are clipped at the map edge.`;
+      }
+      document.querySelectorAll('[data-planet-layer]').forEach(input=>input.addEventListener('change',drawPlanetDistanceMap));
+      document.getElementById('planet-zoom').addEventListener('change',drawPlanetDistanceMap);
       let bodyName='Sun', distance=AU, diameterDeg=SOLAR_DIAMETER_DEG;
       let speed=C, phase=0, running=true, playback=100, last=performance.now(), simulatedTime=0;
       let lightDelay=distance/C;
@@ -119,6 +181,7 @@
       realTime.addEventListener('change',()=>{advance(performance.now());playback=realTime.checked?1:100;document.getElementById('playback-status').textContent=playback===1?'Playback: real time (1×)':'Playback: 100× time-lapse';document.getElementById('playback-note').textContent=playback===1?'Playback: real time (1×). Calculated times use the entered speed.':'Playback: 100× time-lapse. Calculated times use the entered speed.';draw();});
       range.addEventListener('input',()=>setSpeed(C*Number(range.value)/100));input.addEventListener('input',()=>{if(input.value!=='')setSpeed(Number(input.value));});input.addEventListener('change',()=>{if(input.value===''||!Number.isFinite(Number(input.value)))setSpeed(0);});
       ui.play.addEventListener('click',()=>{advance(performance.now());running=!running;ui.play.textContent=running?'Pause animation':'Resume animation';ui.play.setAttribute('aria-pressed',String(running));last=performance.now();});document.getElementById('reset').addEventListener('click',resetModel);
+      drawPlanetDistanceMap();
       setBody();requestAnimationFrame(frame);
     })();
   </script>
