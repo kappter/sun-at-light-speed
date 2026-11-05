@@ -67,17 +67,17 @@
 
     <section class="views" aria-label="Two views of the model">
       <article class="view">
-        <div class="view-head"><div><h2>Orbit view · now</h2><p>Current position, plus the earlier light-emission position</p></div><div class="live"><span class="dot"></span><span id="phase-label">At sunrise · 0°</span></div></div>
+        <div class="view-head"><div><h2>Orbit view · now</h2><p>Selected body now, with checked planet distance bands</p></div><div class="live"><span class="dot"></span><span id="phase-label">At sunrise · 0°</span></div></div>
         <svg class="orbit-svg" viewBox="0 0 520 340" role="img" aria-labelledby="orbit-title orbit-desc">
-          <title id="orbit-title">The selected body orbiting Earth</title><desc id="orbit-desc">Earth at the center of the selected fixed-radius orbit, with current and light-emission positions marked. Each orbit is fitted to this diagram; the two distance scales differ.</desc>
+          <title id="orbit-title">The selected body orbiting Earth</title><desc id="orbit-desc">Earth at the center. The selected body and checked planet distance ranges use compressed square-root radial spacing; colored bands show possible distances, not live planetary orbits.</desc>
           <defs><radialGradient id="earth-fill"><stop stop-color="#6176d7"/><stop offset="1" stop-color="#202b5b"/></radialGradient><radialGradient id="sun-fill"><stop stop-color="#fff4bf"/><stop offset=".55" stop-color="#ffd375"/><stop offset="1" stop-color="#ff9b55"/></radialGradient></defs>
-          <circle cx="260" cy="174" r="126" fill="none" stroke="#353b52" stroke-width="1.5" stroke-dasharray="3 7"/>
+          <circle cx="260" cy="174" r="126" fill="none" stroke="#353b52" stroke-width="1.5" stroke-dasharray="3 7"/><g id="planet-range-rings" aria-hidden="true"></g>
           <circle cx="260" cy="174" r="3" fill="#74809b"/><line id="radius-line" x1="260" y1="174" x2="386" y2="174" stroke="#7380a2" stroke-width="1" stroke-dasharray="4 5"/>
           <text id="radius-label" x="270" y="163" class="svg-small">1 AU</text>
           <circle cx="260" cy="174" r="17" fill="url(#earth-fill)" stroke="#97aaff" stroke-width="1.2"/><path d="M252 166c4 2 4 4 7 5 3 1 1 4 4 6l-4 6-6-3-2-6-4-3z" fill="#8dd9c2" opacity=".9"/><text x="260" y="212" text-anchor="middle" class="svg-label">EARTH</text>
           <circle id="emitted-sun" cx="386" cy="174" r="8" fill="none" stroke="#7de1d0" stroke-width="2"/>
           <circle id="sun-halo" cx="386" cy="174" r="18" fill="#ffc96b" opacity=".13"/><circle id="sun-dot" class="star-glow" cx="386" cy="174" r="8" fill="url(#sun-fill)"/>
-          <text x="260" y="296" text-anchor="middle" class="svg-small">Filled: position now · cyan ring: arriving light</text>
+          <text x="260" y="296" text-anchor="middle" class="svg-small">Filled: selected body · cyan: arriving light · colors: possible planet distance ranges (compressed)</text>
           <text id="playback-note" x="260" y="315" text-anchor="middle" class="svg-small">Playback: 100× time-lapse. Calculated times use the entered speed.</text>
         </svg>
       </article>
@@ -99,7 +99,7 @@
       </article>
     </section>
 
-    <aside class="foot"><p id="model-summary"></p><p>This is a geometric thought experiment: Earth is stationary, the orbit is circular, and gravity, relativity, and Earth's rotation are excluded. A real Sun or Moon cannot travel at light speed. Distances are measured from Earth's center; surface parallax, lunar phases, and illumination changes are not modeled. Planet layers show possible Earth-distance ranges using mean Sun distances in a circular, coplanar estimate. The Moon is treated as a visible marker.</p><p>Use Real time (1×) for one simulated second per real second; unchecked uses 100× time-lapse. Calculated times always use the entered speed. Speed changes reach the sky view after the displayed light-travel delay. Reset and body selection start an established steady orbit at the selected speed. Symbols are enlarged; each overhead orbit fits the same diagram, so its physical scale changes.</p><p>Moon distance: <a href="https://science.nasa.gov/moon/by-the-numbers/" style="color:var(--cyan)">NASA's average Earth–Moon distance of 384,400 km</a>.</p></aside>
+    <aside class="foot"><p id="model-summary"></p><p>This is a geometric thought experiment: Earth is stationary, the orbit is circular, and gravity, relativity, and Earth's rotation are excluded. A real Sun or Moon cannot travel at light speed. Distances are measured from Earth's center; surface parallax, lunar phases, and illumination changes are not modeled. Planet layers show possible Earth-distance ranges using mean Sun distances in a circular, coplanar estimate. The Moon is treated as a visible marker.</p><p>Use Real time (1×) for one simulated second per real second; unchecked uses 100× time-lapse. Calculated times always use the entered speed. Speed changes reach the sky view after the displayed light-travel delay. Reset and body selection start an established steady orbit at the selected speed. Symbols are enlarged. Orbit view uses compressed square-root radial spacing so the planets fit; colored rings show possible Earth-distance ranges, not live orbits. The planet-distance chart below keeps a linear AU scale.</p><p>Moon distance: <a href="https://science.nasa.gov/moon/by-the-numbers/" style="color:var(--cyan)">NASA's average Earth–Moon distance of 384,400 km</a>.</p></aside>
   </main>
   <script>
     (()=>{
@@ -143,8 +143,8 @@
         const status=document.getElementById('planet-map-status');
         status.textContent=`${active} planet ${active===1?'layer':'layers'} shown · 1 AU = ${compact(AU,0)} km · bars beyond ${scale} AU are clipped at the map edge.`;
       }
-      document.querySelectorAll('[data-planet-layer]').forEach(input=>input.addEventListener('change',drawPlanetDistanceMap));
-      document.getElementById('planet-zoom').addEventListener('change',drawPlanetDistanceMap);
+      document.querySelectorAll('[data-planet-layer]').forEach(input=>input.addEventListener('change',()=>{drawPlanetDistanceMap();draw();}));
+      document.getElementById('planet-zoom').addEventListener('change',()=>{drawPlanetDistanceMap();draw();});
       let bodyName='Sun', distance=AU, diameterDeg=SOLAR_DIAMETER_DEG;
       let speed=C, phase=0, running=true, playback=100, last=performance.now(), simulatedTime=0;
       let lightDelay=distance/C;
@@ -170,7 +170,9 @@
       function updateMetrics(){const sec=speed===0?Infinity:2*Math.PI*distance/speed; const angular=speed/distance*180/Math.PI*60;
         ui.speedC.textContent=`${compact(speed/C*100,1)}% of c`;ui.period.textContent=fmtTime(sec);ui.daylight.textContent=fmtTime(sec/2);ui.angular.textContent=speed===0?'0° / min':`${compact(angular,2)}° / min`;ui.disk.textContent=speed===0?'∞':fmtTime(diameterDeg/angular*60);ui.delay.textContent=fmtTime(lightDelay);
       }
-      function draw(){const a=phase, cx=260,cy=174,r=126,x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);ui.sun.setAttribute('cx',x);ui.sun.setAttribute('cy',y);ui.halo.setAttribute('cx',x);ui.halo.setAttribute('cy',y);ui.line.setAttribute('x2',x);ui.line.setAttribute('y2',y);
+      function orbitRadius(km){const au=km/AU,scale=Number(document.getElementById('planet-zoom').value);return 24+102*Math.sqrt(Math.max(0,Math.min(1,au/scale)));}
+      function drawPlanetOrbitBands(){const group=document.getElementById('planet-range-rings');if(!group)return;const parts=[];for(const p of PLANETS){const toggle=document.querySelector(`[data-planet-layer="${p.key}"]`);if(!toggle?.checked)continue;const range=planetEarthRange(p),lo=orbitRadius(range.min*AU),hi=orbitRadius(range.max*AU),mid=(lo+hi)/2,width=Math.max(2,hi-lo);parts.push(`<circle cx="260" cy="174" r="${mid.toFixed(2)}" fill="none" stroke="${p.color}" stroke-width="${width.toFixed(2)}" stroke-opacity=".25" stroke-dasharray="3 5"><title>${p.name}: possible Earth-distance range ${range.min.toFixed(2)} to ${range.max.toFixed(2)} AU</title></circle><circle cx="260" cy="174" r="${lo.toFixed(2)}" fill="none" stroke="${p.color}" stroke-width="1" stroke-opacity=".7"/><circle cx="260" cy="174" r="${hi.toFixed(2)}" fill="none" stroke="${p.color}" stroke-width="1" stroke-opacity=".7"/>`);}group.innerHTML=parts.join('');}
+      function draw(){drawPlanetOrbitBands();const a=phase, cx=260,cy=174,r=orbitRadius(distance),x=cx+r*Math.cos(a),y=cy+r*Math.sin(a);ui.sun.setAttribute('cx',x);ui.sun.setAttribute('cy',y);ui.halo.setAttribute('cx',x);ui.halo.setAttribute('cy',y);ui.line.setAttribute('x2',x);ui.line.setAttribute('y2',y);
         const emitted=observedPhase();document.getElementById('emitted-sun').setAttribute('cx',cx+r*Math.cos(emitted));document.getElementById('emitted-sun').setAttribute('cy',cy+r*Math.sin(emitted));
         const currentDeg=((a*180/Math.PI)%360+360)%360;ui.phase.textContent=`Now · ${currentDeg.toFixed(1)}°`;
         const deg=((emitted*180/Math.PI)%360+360)%360, visible=deg<=180;
