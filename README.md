@@ -41,13 +41,13 @@ The near end occurs when Earth and the planet are on the same side of the Sun; t
 
 | Planet | Mean distance from Sun | Possible distance from Earth | Light travel at $c$ |
 |---|---:|---:|---:|
-| Mercury | 0.387 AU | 0.613–1.387 AU | 5 min 6 sec–11 min 31 sec |
-| Venus | 0.723 AU | 0.277–1.723 AU | 2 min 18 sec–14 min 21 sec |
+| Mercury | 0.387 AU | 0.613–1.387 AU | 5 min 6 sec–11 min 32 sec |
+| Venus | 0.723 AU | 0.277–1.723 AU | 2 min 18 sec–14 min 20 sec |
 | Mars | 1.524 AU | 0.524–2.524 AU | 4 min 22 sec–21 min 0 sec |
 | Jupiter | 5.204 AU | 4.204–6.204 AU | 34 min 58 sec–51 min 36 sec |
-| Saturn | 9.572 AU | 8.572–10.572 AU | 1 hr 11 min–1 hr 28 min |
-| Uranus | 19.165 AU | 18.165–20.165 AU | 2 hr 31 min–2 hr 48 min |
-| Neptune | 30.181 AU | 29.181–31.181 AU | 4 hr 3 min–4 hr 19 min |
+| Saturn | 9.572 AU | 8.572–10.572 AU | 1 hr 11 min–1 hr 27 min |
+| Uranus | 19.165 AU | 18.165–20.165 AU | 2 hr 31 min–2 hr 47 min |
+| Neptune | 30.181 AU | 29.181–31.181 AU | 4 hr 2 min–4 hr 19 min |
 
 ## Orbital math
 
