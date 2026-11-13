@@ -19,7 +19,7 @@
   
     .earth-data{margin-top:18px;padding:22px;background:linear-gradient(150deg,#141929,#0f1320);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
     .earth-data-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:15px}
-    .earth-data-head h2{margin:0;font-size:1.08rem;letter-spacing:-.02em}
+    .earth-data-head h2{margin:0;font-size:1.08rem;letter-spacing:-.02em}.data-motion-toggle{white-space:nowrap;flex:0 0 auto}
     .earth-data-head p{max-width:590px;margin:5px 0 0;color:var(--muted);font-size:.82rem}
     .data-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .data-card{padding:16px;border:1px solid #ffffff18;border-radius:13px;background:#090d17a6}
@@ -121,7 +121,7 @@
     </section>
 
     <section class="earth-data" aria-labelledby="earth-data-title">
-      <div class="earth-data-head"><div><h2 id="earth-data-title">A data pulse around Earth</h2><p>A light signal can carry information around an Earth-sized circuit. Same route, two media: empty space and optical fiber.</p></div></div>
+      <div class="earth-data-head"><div><h2 id="earth-data-title">A data pulse around Earth</h2><p>A light signal can carry information around an Earth-sized circuit. Same route, two media: empty space and optical fiber.</p></div><button class="button data-motion-toggle" id="data-motion-toggle" type="button" aria-pressed="false">Play data pulses</button></div>
       <div class="data-cards">
         <article class="data-card">
           <div class="data-card-head"><h3>Through empty space</h3><span class="data-badge">vacuum · c</span></div>
@@ -245,8 +245,13 @@
         document.getElementById('fiber-lap').textContent=fmtTime(fiberLap);
         document.getElementById('fiber-speed').textContent=`${compact(fiberSignalSpeed,0)} km/s · ${compact(fiberSignalSpeed/C*100,1)}% of c`;
       }
+      const dataMotionToggle=document.getElementById('data-motion-toggle');
+      let dataSignalsPlaying=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function syncDataMotionControl(){dataMotionToggle.textContent=dataSignalsPlaying?'Pause data pulses':'Play data pulses';dataMotionToggle.setAttribute('aria-pressed',String(dataSignalsPlaying));}
+      dataMotionToggle.addEventListener('click',()=>{dataSignalsPlaying=!dataSignalsPlaying;syncDataMotionControl();drawEarthSignals(performance.now());});
+      syncDataMotionControl();
       function drawEarthSignals(now){
-        const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches,t=reduced?0:now/1000;
+        const t=dataSignalsPlaying?now/1000:0;
         const angles=[t/(vacuumLap*SIGNAL_VISUAL_SLOWDOWN)*2*Math.PI,t/(fiberLap*SIGNAL_VISUAL_SLOWDOWN)*2*Math.PI];
         for(const [angle,id,haloId] of [[angles[0],'vacuum-pulse','vacuum-pulse-halo'],[angles[1],'fiber-pulse','fiber-pulse-halo']]){
           const x=130+64*Math.cos(angle),y=92+20*Math.sin(angle);
